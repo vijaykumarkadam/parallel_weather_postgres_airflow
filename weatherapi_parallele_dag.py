@@ -63,7 +63,7 @@ def save_joined_data_s3(task_instance):
     now = datetime.now()
     dt_string = now.strftime("%d%m%Y%H%M%S")
     dt_string = 'joined_weather_data_' + dt_string
-    df.to_csv(f"s3://testing-ymlo/{dt_string}.csv", index=False)
+    df.to_csv(f"s3://testing-ymlo1234/{dt_string}.csv", index=False)
 
 default_args = {
     'owner': 'airflow',
@@ -79,7 +79,7 @@ default_args = {
 
 with DAG('weather_dag_2',
         default_args=default_args,
-        schedule_interval = '@daily',
+        schedule = '@daily',
         catchup=False) as dag:
 
         start_pipeline = EmptyOperator(
@@ -145,7 +145,7 @@ with DAG('weather_dag_2',
             uploadS3_to_postgres  = PostgresOperator(
                 task_id = "tsk_uploadS3_to_postgres",
                 postgres_conn_id = "postgres_conn",
-                sql = "SELECT aws_s3.table_import_from_s3('city_look_up', '', '(format csv, DELIMITER '','', HEADER true)', 'testing-ymlo', 'us_city.csv', 'us-west-2');"
+                sql = "SELECT aws_s3.table_import_from_s3('city_look_up', '', '(format csv, DELIMITER '','', HEADER true)', 'testing-ymlo1234', 'us_city.csv', 'us-west-2');"
             )
 
             create_table_2 = PostgresOperator(
