@@ -1,11 +1,11 @@
 from airflow import DAG
 from datetime import timedelta, datetime
-from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.http.sensors.http import HttpSensor
 import json
-from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.http.operators.http import HttpOperator
 from airflow.operators.python import PythonOperator
 import pandas as pd
 from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -82,7 +82,7 @@ with DAG('weather_dag_2',
         schedule_interval = '@daily',
         catchup=False) as dag:
 
-        start_pipeline = DummyOperator(
+        start_pipeline = EmptyOperator(
             task_id = 'tsk_start_pipeline'
         )
 
@@ -117,7 +117,7 @@ with DAG('weather_dag_2',
             python_callable=save_joined_data_s3
             )
 
-        end_pipeline = DummyOperator(
+        end_pipeline = EmptyOperator(
                 task_id = 'task_end_pipeline'
         )
 
@@ -172,13 +172,13 @@ with DAG('weather_dag_2',
             is_houston_weather_api_ready = HttpSensor(
                 task_id ='tsk_is_houston_weather_api_ready',
                 http_conn_id='weathermap_api',
-                endpoint='/data/2.5/weather?q=houston&APPID=3ef58669dda93f129d53eff4e6346905'
+                endpoint='/data/2.5/weather?q=houston&APPID=435fbe43710fd493355f4d3c28dc4fb2'
             )
 
-            extract_houston_weather_data = SimpleHttpOperator(
+            extract_houston_weather_data = HttpOperator(
                 task_id = 'tsk_extract_houston_weather_data',
                 http_conn_id = 'weathermap_api',
-                endpoint='/data/2.5/weather?q=houston&APPID=3ef58669dda93f129d53eff4e6346905',
+                endpoint='/data/2.5/weather?q=houston&APPID=435fbe43710fd493355f4d3c28dc4fb2',
                 method = 'GET',
                 response_filter= lambda r: json.loads(r.text),
                 log_response=True
