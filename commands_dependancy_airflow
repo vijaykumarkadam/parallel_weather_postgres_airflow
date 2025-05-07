@@ -9,7 +9,7 @@ source weather_venv/bin/activate
 pip install boto3
 pip install s3fs
 pip install fsspec
-sudo pip install apache-airflow-providers-postgres
+pip install apache-airflow-providers-postgres
 pip install --upgrade awscli
 aws configure
 pip install apache-airflow
