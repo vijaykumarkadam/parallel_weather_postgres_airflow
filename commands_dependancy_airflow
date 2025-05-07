@@ -1,1 +1,35 @@
 
+#run one ec2 instance in AWS and run all this commands to up an running airflow
+python3 --version
+sudo apt update
+sudo apt install python3-pip
+sudo apt install python3.10-venv
+python3 -m venv weather_venv
+source weather_venv/bin/activate
+pip install boto3
+pip install s3fs
+pip install fsspec
+sudo pip install apache-airflow-providers-postgres
+pip install --upgrade awscli
+aws configure
+pip install apache-airflow
+pip install apache-airflow-providers-http
+airflow standalone
+
+
+#configure postgresql client on ec2 machine
+# Create the repository configuration file:
+. /etc/os-release
+sudo sh -c "echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $VERSION_CODENAME-pgdg main' > /etc/apt/sources.list.d/pgdg.list"
+
+# Import the repository signing key:
+sudo apt install curl ca-certificates
+sudo install -d /usr/share/postgresql-common/pgdg
+sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+# Update the package lists:
+sudo apt update
+
+# Install the latest version of PostgreSQL:
+# If you want a specific version, use 'postgresql-17' or similar instead of 'postgresql'
+sudo apt -y install postgresql
