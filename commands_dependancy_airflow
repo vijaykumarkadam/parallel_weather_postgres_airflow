@@ -37,27 +37,27 @@ sudo apt -y install postgresql
 
 #Importing data from Amazon S3 into an RDS for PostgreSQL DB instance
 #To install the aws_s3 extension
-psql --host=111122223333.aws-region.rds.amazonaws.com --port=5432 --username=postgres --password
+psql --host=weather-s3-db.c58ywcgae1qy.us-west-2.rds.amazonaws.com --port=5432 --username=postgres --password
 CREATE EXTENSION aws_s3 CASCADE;
 \dx                         #list of extension
 
 #create IAM role and policy also create bucket
-aws iam create-role \
+aws aws iam create-role \
     --role-name postgresql-S3-Role-yml-4 \
     --assume-role-policy-document '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Principal": {"Service": "rds.amazonaws.com"}, "Action": "sts:AssumeRole"}]}'
 
-aws iam create-policy \
+aws aws iam create-policy \
     --policy-name postgresS3Policy-yml-4 \
-    --policy-document '{"Version": "2012-10-17", "Statement": [{"Sid": "s3import", "Action": ["s3:GetObject", "s3:ListBucket"], "Effect": "Allow", "Resource": ["arn:aws:s3:::testing-ymlo", "arn:aws:s3:::testing-ymlo/*"]}]}'
+    --policy-document '{"Version": "2012-10-17", "Statement": [{"Sid": "s3import", "Action": ["s3:GetObject", "s3:ListBucket"], "Effect": "Allow", "Resource": ["arn:aws:s3:::testing-ymlo1234", "arn:aws:s3:::testing-ymlo1234/*"]}]}'
 
-aws iam attach-role-policy \
-    --policy-arn arn:aws:iam::177571188737:policy/postgresS3Policy-yml-4 \
+aws aws iam attach-role-policy \
+    --policy-arn arn:aws:iam::851725377870:policy/postgresS3Policy-yml-4 \
     --role-name postgresql-S3-Role-yml-4
 
 aws rds add-role-to-db-instance \
-   --db-instance-identifier rds-db-test-yml-4 \
+   --db-instance-identifier weather-s3-db \
    --feature-name s3Import \
-   --role-arn arn:aws:iam::177571188737:role/postgresql-S3-Role-yml-4   \
+   --role-arn arn:aws:iam::851725377870:role/postgresql-S3-Role-yml-4  \
    --region us-west-2
 
 
